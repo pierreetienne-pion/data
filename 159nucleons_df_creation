@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jun  4 21:47:25 2020
+
+@author: pierre-etiennepion
+"""
+
+import pandas as pd
+import glob
+
+chemin = r'/Users/pierre-etiennepion/Desktop/Basededonnéecvs'
+tous_fichiers = glob.glob(chemin + "/*.csv")
+
+li = []
+
+for fichiers in tous_fichiers:
+    df = pd.read_csv(fichiers, sep=';' ,index_col=None, header=0)
+    li.append(df)
+
+liste=[]
+n=len(li)
+for i in range(n):
+    if li[i]['Z'][0]==3 and li[i]['A'][0]==6:
+        liste.append(li[i])
+        del li[i]
+
+
+a=liste[0]['Z'][0]
+b=liste[0]['A'][0]
+
+
+while len(liste)<n:
+    ref1=1000-a
+    ref2=1000-b
+    for i in range(len(li)):
+        if li[i]['Z'][0]-a<=ref1:
+            nva=li[i]['Z'][0]
+            nvb=li[i]['A'][0]
+            ref1=nva-a
+            ref2=nvb-b
+            indicesup=i
+            dispo=li[i]
+    liste.append(dispo)
+    li.pop(indicesup)
+    a=nva
+    b=nvb
+
+bdd = pd.concat(liste, axis=0, ignore_index=True)
+bdd.to_csv('bdd_159nucleons.csv')
